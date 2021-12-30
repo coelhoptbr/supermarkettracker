@@ -176,6 +176,9 @@
       "webpack-dev-server": "3.11.0",
       "webpack-merge": "4.2.2"
     },
+    "scripts": {
+      "start": "node index.js"
+    },
     "hash": "42cfaf56f7ba3cac30739412ba18a2367e6a263ea8c810d61e4539fc8f21aec9"
   }
 }
