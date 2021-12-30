@@ -5,14 +5,16 @@ import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Document(collection="product")
 public class Product {
-
+    @NotNull
     private ObjectId id;
+    @NotNull
     private String name;
 
     public Product() {

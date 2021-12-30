@@ -5,16 +5,28 @@ import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.Objects;
+
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Document(collection="order")
 public class Order {
 
+    @NotNull
     private ObjectId id;
+    @NotNull
     private UserInfo userInfo;
+    @NotNull
     private Product product;
+    @NotNull
     private Shop shop;
+    @NotNull
+    private LocalDate date;
+    @NotNull
     private Double price;
+    @NotNull
     private Boolean isOffer;
 
     public Order() {
@@ -52,6 +64,14 @@ public class Order {
         this.shop = shop;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
     public Double getPrice() {
         return price;
     }
@@ -66,5 +86,18 @@ public class Order {
 
     public void setOffer(Boolean offer) {
         isOffer = offer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Order)) return false;
+        Order order = (Order) o;
+        return getId().equals(order.getId()) && getUserInfo().equals(order.getUserInfo()) && getProduct().equals(order.getProduct()) && getShop().equals(order.getShop());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getUserInfo(), getProduct(), getShop());
     }
 }
