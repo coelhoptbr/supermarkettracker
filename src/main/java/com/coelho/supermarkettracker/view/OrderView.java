@@ -3,6 +3,7 @@ package com.coelho.supermarkettracker.view;
 import com.coelho.supermarkettracker.domain.Const;
 import com.coelho.supermarkettracker.domain.MinMaxEnum;
 import com.coelho.supermarkettracker.domain.Order;
+import com.coelho.supermarkettracker.domain.PagesEnum;
 import com.coelho.supermarkettracker.domain.Product;
 import com.coelho.supermarkettracker.domain.Shop;
 import com.coelho.supermarkettracker.domain.UserInfo;
@@ -98,7 +99,11 @@ public class OrderView  extends VerticalLayout {
         Button btnUpdateOrder = new Button(Const.ORDER_UPDATE, e -> updateOrder());
         hrzLayoutToolbar.add(btnNewOrder, btnUpdateOrder);
 
+        ViewUtils.addButtonsMenu(hrzLayoutToolbar, PagesEnum.ORDER);
+
         // grid
+        add(new Label("List of " + Const.ORDERS));
+
         add(getOrderGrid(ordService));
 
         setSizeFull();

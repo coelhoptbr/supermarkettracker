@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 import org.vaadin.crudui.crud.CrudListener;
 
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserInfoService implements CrudListener<UserInfo> {
@@ -18,7 +21,9 @@ public class UserInfoService implements CrudListener<UserInfo> {
 
     @Override
     public Collection<UserInfo> findAll() {
-        return repo.findAll();
+        List<UserInfo> result = repo.findAll();
+        result = result.stream().sorted(Comparator.comparing(UserInfo::getFullName, String.CASE_INSENSITIVE_ORDER)).collect(Collectors.toList());
+        return result;
     }
 
     @Override

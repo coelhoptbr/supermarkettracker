@@ -13,4 +13,8 @@ public abstract class Const {
     public static final String CLOSE = "Close";
     public static final String ORDER_NEW = "New order";
     public static final String ORDER_UPDATE = "Update order";
+    public static final String SHOPS = "Shops";
+    public static final String PRODUCTS = "Products";
+    public static final String ORDERS = "Orders";
+    public static final String USERINFO = "User Info";
 }
