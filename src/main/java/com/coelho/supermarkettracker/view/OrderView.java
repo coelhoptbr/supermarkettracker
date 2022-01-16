@@ -7,7 +7,6 @@ import com.coelho.supermarkettracker.domain.PagesEnum;
 import com.coelho.supermarkettracker.domain.Product;
 import com.coelho.supermarkettracker.domain.Shop;
 import com.coelho.supermarkettracker.domain.UserInfo;
-import com.coelho.supermarkettracker.domain.CurrencyEnum;
 import com.coelho.supermarkettracker.service.OrderService;
 import com.coelho.supermarkettracker.service.ProductService;
 import com.coelho.supermarkettracker.service.ShopService;
@@ -48,7 +47,6 @@ public class OrderView  extends VerticalLayout implements HasDynamicTitle {
     private GridCrud<Order> orderCrudGrid;
     private Dialog dlgInsertNewOrder;
     private ObjectId idOrderInEditMode;
-
     private final OrderService ordService;
 
     private String title = "Price Tracker - Orders";
@@ -106,7 +104,10 @@ public class OrderView  extends VerticalLayout implements HasDynamicTitle {
         Button btnNewOrder = new Button(Const.ORDER_NEW, e -> openPopUpForInserting());
         // creating the button update order
         Button btnUpdateOrder = new Button(Const.ORDER_UPDATE, e -> updateOrder());
-        hrzLayoutToolbar.add(btnNewOrder, btnUpdateOrder);
+        // creating the button Download report
+        Button btnDownloadReport = new Button(Const.DOWNLOAD_REPORT, e -> downloadReport());
+
+        hrzLayoutToolbar.add(btnNewOrder, btnUpdateOrder, btnDownloadReport);
 
         ViewUtils.addButtonsMenu(hrzLayoutToolbar, PagesEnum.ORDER);
 
@@ -273,5 +274,9 @@ public class OrderView  extends VerticalLayout implements HasDynamicTitle {
         } else {
             lblLessExpensive.setText(Const.MSG_NO_HISTORY_LESS_EXPENSIVE);
         }
+    }
+
+    private void downloadReport() {
+        getUI().get().getPage().open("/avgpricereport/download", "_self");
     }
 }
