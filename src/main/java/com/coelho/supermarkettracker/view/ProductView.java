@@ -7,11 +7,19 @@ import com.coelho.supermarkettracker.service.ProductService;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import org.vaadin.crudui.crud.impl.GridCrud;
 
 @Route("/products")
-public class ProductView extends VerticalLayout {
+public class ProductView extends VerticalLayout implements HasDynamicTitle {
+
+    private String title = "Price Tracker - Products";
+
+    @Override
+    public String getPageTitle() {
+        return title;
+    }
 
     public ProductView(ProductService service) {
         HorizontalLayout hrzToolbar = new HorizontalLayout();

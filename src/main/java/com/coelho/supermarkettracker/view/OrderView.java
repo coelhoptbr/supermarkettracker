@@ -27,6 +27,7 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import org.bson.types.ObjectId;
 import org.vaadin.crudui.crud.impl.GridCrud;
@@ -34,7 +35,7 @@ import org.vaadin.crudui.crud.impl.GridCrud;
 import java.util.Optional;
 
 @Route("/order")
-public class OrderView  extends VerticalLayout {
+public class OrderView  extends VerticalLayout implements HasDynamicTitle {
 
     private ComboBox<UserInfo> cbUserInfo = new ComboBox<>(Const.COMBOBOX_USERINFO_LABEL);
     private ComboBox<Product> cbProduct = new ComboBox<>(Const.COMBOBOX_PRODUCT_LABEL);
@@ -50,6 +51,13 @@ public class OrderView  extends VerticalLayout {
     private final CurrencyEnum currency = CurrencyEnum.EUR;
 
     private final OrderService ordService;
+
+    private String title = "Price Tracker - Orders";
+
+    @Override
+    public String getPageTitle() {
+        return title;
+    }
 
     public OrderView(OrderService ordService, UserInfoService uiService, ProductService prService,
                      ShopService shService) {
