@@ -3,10 +3,12 @@ package com.coelho.supermarkettracker.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Objects;
 
 @Data
@@ -28,6 +30,9 @@ public class Order {
     private Double price;
     @NotNull
     private Boolean isOffer;
+
+    @Indexed(name="orderDateIndex", expireAfterSeconds = 0)
+    private LocalDate expirationDate;
 
     public Order() {
     }
@@ -70,6 +75,7 @@ public class Order {
 
     public void setDate(LocalDate date) {
         this.date = date;
+        this.expirationDate = date.plusYears(2);
     }
 
     public Double getPrice() {
@@ -86,6 +92,10 @@ public class Order {
 
     public void setOffer(Boolean offer) {
         isOffer = offer;
+    }
+
+    public LocalDate getExpirationDate() {
+        return expirationDate;
     }
 
     @Override
