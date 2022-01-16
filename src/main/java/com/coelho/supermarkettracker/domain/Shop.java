@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Document(collection="aleshop")
+@Document(collection="shop")
 public class Shop {
 
     @NotNull

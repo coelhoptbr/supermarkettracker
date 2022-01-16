@@ -11,7 +11,7 @@ import java.util.Objects;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Document(collection="aleorder")
+@Document(collection="order")
 public class Order {
 
     @NotNull
