@@ -1,6 +1,13 @@
 package com.coelho.supermarkettracker.view;
 
-import com.coelho.supermarkettracker.domain.*;
+import com.coelho.supermarkettracker.domain.Const;
+import com.coelho.supermarkettracker.domain.MinMaxEnum;
+import com.coelho.supermarkettracker.domain.Order;
+import com.coelho.supermarkettracker.domain.PagesEnum;
+import com.coelho.supermarkettracker.domain.Product;
+import com.coelho.supermarkettracker.domain.Shop;
+import com.coelho.supermarkettracker.domain.UserInfo;
+import com.coelho.supermarkettracker.domain.CurrencyEnum;
 import com.coelho.supermarkettracker.service.OrderService;
 import com.coelho.supermarkettracker.service.ProductService;
 import com.coelho.supermarkettracker.service.ShopService;
