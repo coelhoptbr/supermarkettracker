@@ -40,6 +40,7 @@ public class OrderView  extends VerticalLayout {
     private GridCrud<Order> crud;
     private Dialog dlgInsertNewOrder;
     private ObjectId idOrderInEditMode;
+    private final CurrencyEnum currency = CurrencyEnum.EUR;
 
     private final OrderService ordService;
 
@@ -132,7 +133,7 @@ public class OrderView  extends VerticalLayout {
 
     private Div getCurrencySuffixDiv() {
         Div euroSuffix = new Div();
-        euroSuffix.setText(CurrencyEnum.EUR.getSymbol());
+        euroSuffix.setText(currency.getSymbol());
         return euroSuffix;
     }
 
@@ -239,7 +240,8 @@ public class OrderView  extends VerticalLayout {
                 cbProduct.getValue(), null, MinMaxEnum.MAX);
         if (order != null) {
             lblMoreExpensive.setText("More expensive was in " + order.getShop().getName()
-                    + " on " + order.getDate().toString() + " at a cost of " + order.getPrice().toString());
+                    + " on " + order.getDate().toString() + " at a cost of "
+                    + currency.getSymbol() + " "  + order.getPrice().toString());
         } else {
             lblMoreExpensive.setText(Const.MSG_NO_HISTORY_MORE_EXPENSIVE);
         }
@@ -250,7 +252,8 @@ public class OrderView  extends VerticalLayout {
                 cbProduct.getValue(), null, MinMaxEnum.MIN);
         if (order != null) {
             lblLessExpensive.setText("Less expensive was in " + order.getShop().getName()
-                    + " on " + order.getDate().toString() + " at a cost of " + order.getPrice().toString());
+                    + " on " + order.getDate().toString() + " at a cost of "
+                    + currency.getSymbol() + " " + order.getPrice().toString());
         } else {
             lblLessExpensive.setText(Const.MSG_NO_HISTORY_LESS_EXPENSIVE);
         }
