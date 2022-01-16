@@ -5,6 +5,8 @@ import com.coelho.supermarkettracker.domain.Order;
 import com.coelho.supermarkettracker.domain.Product;
 import com.coelho.supermarkettracker.domain.Shop;
 import com.coelho.supermarkettracker.repo.OrderRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -18,17 +20,24 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
+@PropertySource("classpath:build.properties")
 public class OrderService implements CrudListener<Order> {
 
     private final MongoTemplate mngTempl;
 
     private final OrderRepository repo;
 
+    @Value("${app.build.time}")
+    String appBuildTimeStamp;
+
     public OrderService(OrderRepository repo, MongoTemplate mngTempl) {
         this.repo = repo;
         this.mngTempl = mngTempl;
     }
 
+    public String getAppBuildTimeStamp() {
+        return appBuildTimeStamp;
+    }
 
     @Override
     public Collection<Order> findAll() {
