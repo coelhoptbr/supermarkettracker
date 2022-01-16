@@ -1,5 +1,6 @@
 package com.coelho.supermarkettracker.service;
 
+import com.coelho.supermarkettracker.config.CustomMongoCollection;
 import com.coelho.supermarkettracker.domain.*;
 import com.coelho.supermarkettracker.repo.OrderRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,10 +79,12 @@ public class OrderService implements CrudListener<Order> {
                 .limit(1)
                 .with(Sort.by(directionSort, "price"));
 
-        query.addCriteria(Criteria.where("product._id").is(prod.getId()));
+        query.addCriteria(Criteria.where(CustomMongoCollection
+                .getCollectionNameWithPrefix("product").concat("._id")).is(prod.getId()));
 
         if (shop != null && shop.getId() != null) {
-            query.addCriteria(Criteria.where("shop._id").is(shop.getId()));
+            query.addCriteria(Criteria.where(CustomMongoCollection
+                    .getCollectionNameWithPrefix("shop").concat("._id")).is(shop.getId()));
         }
 
         Calendar c = Calendar.getInstance();
