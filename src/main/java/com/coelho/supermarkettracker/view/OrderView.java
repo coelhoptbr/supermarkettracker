@@ -47,7 +47,9 @@ public class OrderView  extends VerticalLayout {
     private GridCrud<Order> orderCrudGrid;
     private Dialog dlgInsertNewOrder;
     private ObjectId idOrderInEditMode;
-    private final CurrencyEnum currency = CurrencyEnum.EUR;
+
+    private final CurrencyEnum currency = CurrencyEnum.BRL;
+
 
     private final OrderService ordService;
 
