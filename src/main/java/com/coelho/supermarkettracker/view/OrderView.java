@@ -48,7 +48,7 @@ public class OrderView  extends VerticalLayout implements HasDynamicTitle {
     private GridCrud<Order> orderCrudGrid;
     private Dialog dlgInsertNewOrder;
     private ObjectId idOrderInEditMode;
-    private final CurrencyEnum currency = CurrencyEnum.BRL;
+    private final CurrencyEnum currency = CurrencyEnum.EUR;
 
     private final OrderService ordService;
 
