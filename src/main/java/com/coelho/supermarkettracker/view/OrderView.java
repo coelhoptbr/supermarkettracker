@@ -44,7 +44,7 @@ public class OrderView  extends VerticalLayout {
     private Checkbox ckbSpecialOffer = new Checkbox(Const.CHECKBOX_SPECIAL_OFFER_LABEL);
     private Label lblMoreExpensive = new Label(Const.MSG_NO_HISTORY_MORE_EXPENSIVE);
     private Label lblLessExpensive = new Label(Const.MSG_NO_HISTORY_LESS_EXPENSIVE);
-    private GridCrud<Order> crud;
+    private GridCrud<Order> orderCrudGrid;
     private Dialog dlgInsertNewOrder;
     private ObjectId idOrderInEditMode;
     private final CurrencyEnum currency = CurrencyEnum.EUR;
@@ -108,6 +108,8 @@ public class OrderView  extends VerticalLayout {
 
         add(getOrderGrid(ordService));
 
+        add(new Label("Build timestamp: " + ordService.getAppBuildTimeStamp()));
+
         setSizeFull();
     }
 
@@ -120,22 +122,22 @@ public class OrderView  extends VerticalLayout {
     }
 
     private GridCrud<Order> getOrderGrid(OrderService service) {
-        crud = new GridCrud<Order>(Order.class, ordService);
+        orderCrudGrid = new GridCrud<Order>(Order.class, ordService);
 
-        crud.getGrid().setColumns("date", "userInfo.fullName", "shop.name", "product.name", "price", "isOffer");
+        orderCrudGrid.getGrid().setColumns("date", "userInfo.fullName", "shop.name", "product.name", "price", "isOffer");
 
-        crud.getGrid().getColumnByKey("userInfo.fullName").setHeader("User");
-        crud.getGrid().getColumnByKey("shop.name").setHeader("Shop");
-        crud.getGrid().getColumnByKey("product.name").setHeader("Product");
-        crud.getGrid().getColumnByKey("isOffer").setHeader("On sale");
+        orderCrudGrid.getGrid().getColumnByKey("userInfo.fullName").setHeader("User");
+        orderCrudGrid.getGrid().getColumnByKey("shop.name").setHeader("Shop");
+        orderCrudGrid.getGrid().getColumnByKey("product.name").setHeader("Product");
+        orderCrudGrid.getGrid().getColumnByKey("isOffer").setHeader("On sale");
 
-        crud.getGrid().setColumnReorderingAllowed(true);
-        crud.getGrid().setVerticalScrollingEnabled(true);
+        orderCrudGrid.getGrid().setColumnReorderingAllowed(true);
+        orderCrudGrid.getGrid().setVerticalScrollingEnabled(true);
 
-        crud.getAddButton().setVisible(false);
-        crud.getUpdateButton().setVisible(false);
+        orderCrudGrid.getAddButton().setVisible(false);
+        orderCrudGrid.getUpdateButton().setVisible(false);
 
-        return crud;
+        return orderCrudGrid;
     }
 
     private Div getCurrencySuffixDiv() {
@@ -192,13 +194,13 @@ public class OrderView  extends VerticalLayout {
             dlgInsertNewOrder.close();
         }
 
-        crud.getGrid().setItems(ordService.findAll());
+        orderCrudGrid.getGrid().setItems(ordService.findAll());
 
         return ord;
     }
 
     private void updateOrder() {
-         Optional<Order> selOrder = crud.getGrid().getSelectionModel().getFirstSelectedItem();
+         Optional<Order> selOrder = orderCrudGrid.getGrid().getSelectionModel().getFirstSelectedItem();
          if (selOrder.isPresent()) {
 
              Order order = selOrder.get();
