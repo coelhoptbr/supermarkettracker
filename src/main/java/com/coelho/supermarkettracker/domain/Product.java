@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Document(collection="product")
+@Document(collection="aleproduct")
 public class Product {
     @NotNull
     private ObjectId id;
