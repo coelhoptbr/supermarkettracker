@@ -1,12 +1,10 @@
 package com.coelho.supermarkettracker.service;
 
-import com.coelho.supermarkettracker.domain.MinMaxEnum;
-import com.coelho.supermarkettracker.domain.Order;
-import com.coelho.supermarkettracker.domain.Product;
-import com.coelho.supermarkettracker.domain.Shop;
+import com.coelho.supermarkettracker.domain.*;
 import com.coelho.supermarkettracker.repo.OrderRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -20,7 +18,10 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-@PropertySource("classpath:build.properties")
+@PropertySources({
+        @PropertySource("classpath:application.properties"),
+        @PropertySource("classpath:build.properties")
+})
 public class OrderService implements CrudListener<Order> {
 
     private final MongoTemplate mngTempl;
@@ -30,9 +31,16 @@ public class OrderService implements CrudListener<Order> {
     @Value("${app.build.time}")
     String appBuildTimeStamp;
 
+    @Value("${currency.symbol}")
+    String currencySymbol;
+
     public OrderService(OrderRepository repo, MongoTemplate mngTempl) {
         this.repo = repo;
         this.mngTempl = mngTempl;
+    }
+
+    public CurrencyEnum getCurrency() {
+        return CurrencyEnum.getByName(currencySymbol);
     }
 
     public String getAppBuildTimeStamp() {
