@@ -1,7 +1,9 @@
 package com.coelho.supermarkettracker.view;
 
+import com.coelho.supermarkettracker.domain.Const;
 import com.coelho.supermarkettracker.domain.MinMaxEnum;
 import com.coelho.supermarkettracker.domain.Order;
+import com.coelho.supermarkettracker.domain.PagesEnum;
 import com.coelho.supermarkettracker.domain.Product;
 import com.coelho.supermarkettracker.domain.Shop;
 import com.coelho.supermarkettracker.domain.UserInfo;
@@ -9,31 +11,41 @@ import com.coelho.supermarkettracker.service.OrderService;
 import com.coelho.supermarkettracker.service.ProductService;
 import com.coelho.supermarkettracker.service.ShopService;
 import com.coelho.supermarkettracker.service.UserInfoService;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.router.Route;
+import org.bson.types.ObjectId;
 import org.vaadin.crudui.crud.impl.GridCrud;
+
+import java.util.Optional;
 
 @Route("/order")
 public class OrderView  extends VerticalLayout {
 
-    private ComboBox<UserInfo> cbUserInfo = new ComboBox<>("Select your user");
-    private ComboBox<Product> cbProduct = new ComboBox<>("Select your product");
-    private ComboBox<Shop> cbShop = new ComboBox<>("Select your shop");
-    private DatePicker dateOrder = new DatePicker("Order date");
-    private NumberField txtPrice = new NumberField("Price");
-    private Checkbox ckbSpecialOffer = new Checkbox("Special offer");
+    private ComboBox<UserInfo> cbUserInfo = new ComboBox<>(Const.COMBOBOX_USERINFO_LABEL);
+    private ComboBox<Product> cbProduct = new ComboBox<>(Const.COMBOBOX_PRODUCT_LABEL);
+    private ComboBox<Shop> cbShop = new ComboBox<>(Const.COMBOBOX_SHOP_LABEL);
+    private DatePicker dateOrder = new DatePicker(Const.DATEPICKER_ORDER_DATE_LABEL);
+    private NumberField txtPrice = new NumberField(Const.NUMBERFIELD_PRICE_LABEL);
+    private Checkbox ckbSpecialOffer = new Checkbox(Const.CHECKBOX_SPECIAL_OFFER_LABEL);
+    private Label lblMoreExpensive = new Label(Const.MSG_NO_HISTORY_MORE_EXPENSIVE);
+    private Label lblLessExpensive = new Label(Const.MSG_NO_HISTORY_LESS_EXPENSIVE);
     private GridCrud<Order> crud;
-    private Label lblMoreExpensive = new Label("No history found for more expensive");
-    private Label lblLessExpensive = new Label("No history found for less expensive");
+    private Dialog dlgInsertNewOrder;
+    private ObjectId idOrderInEditMode;
 
     private final OrderService ordService;
 
@@ -41,52 +53,93 @@ public class OrderView  extends VerticalLayout {
                      ShopService shService) {
         this.ordService = ordService;
 
-        Dialog dlgInsertNewOrder = new Dialog();
+        // creating dialog popup
+        dlgInsertNewOrder = new Dialog();
         add(dlgInsertNewOrder);
 
-        Button btnNewOrder = new Button("New Order", e -> dlgInsertNewOrder.open());
-        add(btnNewOrder);
+        // creating a horizontal layout inside the dialog popup for the toolbar
+        HorizontalLayout hrzLayoutToolbar = new HorizontalLayout();
+        add(hrzLayoutToolbar);
 
-        // dialog composition
+        // creating a vertical layout inside the dialog popup for the data fields
         VerticalLayout vrtLayoutDlgNewOrder = new VerticalLayout();
         dlgInsertNewOrder.add(vrtLayoutDlgNewOrder);
 
+            insertCbUserInfo(uiService, vrtLayoutDlgNewOrder);
+
+            insertCbShop(shService, vrtLayoutDlgNewOrder);
+
+            vrtLayoutDlgNewOrder.add(dateOrder);
+
+            insertCbProduct(prService, vrtLayoutDlgNewOrder);
+
+            txtPrice.setSuffixComponent(getEuroSuffixDiv());
+
+            vrtLayoutDlgNewOrder.add(txtPrice, ckbSpecialOffer);
+
+        // creating a horizontal layout inside the dialog popup for the buttons
         HorizontalLayout hrzLayoutDlgNewOrder = new HorizontalLayout();
         dlgInsertNewOrder.add(hrzLayoutDlgNewOrder);
 
+            Button btnSave = new Button(Const.SAVE, e-> this.insertOrder());
+
+            Button btnClose = new Button(Const.CLOSE, e-> dlgInsertNewOrder.close());
+
+            hrzLayoutDlgNewOrder.add(btnSave, btnClose);
+
+        // creating a vertical layout inside the dialog popup for the summary
         VerticalLayout vrtLayoutSummary = new VerticalLayout();
         dlgInsertNewOrder.add(vrtLayoutSummary);
 
-        vrtLayoutSummary.add(lblLessExpensive, lblMoreExpensive);
+            vrtLayoutSummary.add(lblLessExpensive, lblMoreExpensive);
 
-        insertCbUserInfo(uiService, vrtLayoutDlgNewOrder);
-        insertCbShop(shService, vrtLayoutDlgNewOrder);
+        // creating the button new order
+        Button btnNewOrder = new Button(Const.ORDER_NEW, e -> openPopUpForInserting());
+        // creating the button update order
+        Button btnUpdateOrder = new Button(Const.ORDER_UPDATE, e -> updateOrder());
+        hrzLayoutToolbar.add(btnNewOrder, btnUpdateOrder);
 
-        vrtLayoutDlgNewOrder.add(dateOrder);
+        ViewUtils.addButtonsMenu(hrzLayoutToolbar, PagesEnum.ORDER);
 
-        insertCbProduct(prService, vrtLayoutDlgNewOrder);
+        // grid
+        add(new Label("List of " + Const.ORDERS));
 
-        Div euroSuffix = new Div();
-        euroSuffix.setText("€");
-        txtPrice.setSuffixComponent(euroSuffix);
+        add(getOrderGrid(ordService));
 
-        vrtLayoutDlgNewOrder.add(txtPrice, ckbSpecialOffer);
+        setSizeFull();
+    }
 
+    private void openPopUpForInserting() {
+        this.idOrderInEditMode = null;
+        clearScreenForInsert();
+        cbUserInfo.clear();
+        cbShop.clear();
+        dlgInsertNewOrder.open();
+    }
 
-        Button btnSave = new Button("Save", e-> this.insertOrder());
-        Button btnCancel = new Button("Cancel", e-> dlgInsertNewOrder.close());
-        hrzLayoutDlgNewOrder.add(btnSave, btnCancel);
-
-
+    private GridCrud<Order> getOrderGrid(OrderService service) {
         crud = new GridCrud<Order>(Order.class, ordService);
+
         crud.getGrid().setColumns("date", "userInfo.fullName", "shop.name", "product.name", "price", "isOffer");
-        crud.getGrid().setItems(ordService.findAll());
+
+        crud.getGrid().getColumnByKey("userInfo.fullName").setHeader("User");
+        crud.getGrid().getColumnByKey("shop.name").setHeader("Shop");
+        crud.getGrid().getColumnByKey("product.name").setHeader("Product");
+        crud.getGrid().getColumnByKey("isOffer").setHeader("On sale");
+
+        crud.getGrid().setColumnReorderingAllowed(true);
+        crud.getGrid().setVerticalScrollingEnabled(true);
+
         crud.getAddButton().setVisible(false);
         crud.getUpdateButton().setVisible(false);
 
-        add(crud);
+        return crud;
+    }
 
-        setSizeFull();
+    private Div getEuroSuffixDiv() {
+        Div euroSuffix = new Div();
+        euroSuffix.setText("€");
+        return euroSuffix;
     }
 
     private Boolean insertCbUserInfo(UserInfoService service, VerticalLayout target) {
@@ -127,16 +180,61 @@ public class OrderView  extends VerticalLayout {
         ord.setDate(dateOrder.getValue());
         ord.setPrice(txtPrice.getValue());
         ord.setIsOffer(ckbSpecialOffer.getValue());
-        ordService.add(ord);
 
-        clearScreen();
+        if (this.idOrderInEditMode == null) {
+            ordService.add(ord);
+            clearScreenForInsert();
+        } else {
+            ord.setId(this.idOrderInEditMode);
+            ordService.update(ord);
+            dlgInsertNewOrder.close();
+        }
 
         crud.getGrid().setItems(ordService.findAll());
 
         return ord;
     }
 
-    private void clearScreen() {
+    private void updateOrder() {
+         Optional<Order> selOrder = crud.getGrid().getSelectionModel().getFirstSelectedItem();
+         if (selOrder.isPresent()) {
+
+             Order order = selOrder.get();
+             this.idOrderInEditMode = order.getId();
+             cbUserInfo.setValue(order.getUserInfo());
+             cbShop.setValue(order.getShop());
+             cbProduct.setValue(order.getProduct());
+             dateOrder.setValue(order.getDate());
+             txtPrice.setValue(order.getPrice());
+             ckbSpecialOffer.setValue(order.getIsOffer());
+
+             dlgInsertNewOrder.open();
+         } else {
+             showErrorNotification("Select an Order to update on the list");
+         }
+    }
+
+    private void showErrorNotification(String message) {
+        Notification notification = new Notification();
+        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+
+        Div text = new Div(new Text(message));
+
+        Button closeButton = new Button(new Icon("lumo", "cross"));
+        closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
+        closeButton.getElement().setAttribute("aria-label", "Close");
+        closeButton.addClickListener(event -> {
+            notification.close();
+        });
+
+        HorizontalLayout layout = new HorizontalLayout(text, closeButton);
+        layout.setAlignItems(Alignment.CENTER);
+
+        notification.add(layout);
+        notification.open();
+    }
+
+    private void clearScreenForInsert() {
         cbProduct.clear();
         txtPrice.clear();
         ckbSpecialOffer.clear();
@@ -148,6 +246,8 @@ public class OrderView  extends VerticalLayout {
         if (order != null) {
             lblMoreExpensive.setText("More expensive was in " + order.getShop().getName()
                     + " on " + order.getDate().toString() + " at a cost of " + order.getPrice().toString());
+        } else {
+            lblMoreExpensive.setText(Const.MSG_NO_HISTORY_MORE_EXPENSIVE);
         }
     }
 
@@ -157,6 +257,8 @@ public class OrderView  extends VerticalLayout {
         if (order != null) {
             lblLessExpensive.setText("Less expensive was in " + order.getShop().getName()
                     + " on " + order.getDate().toString() + " at a cost of " + order.getPrice().toString());
+        } else {
+            lblLessExpensive.setText(Const.MSG_NO_HISTORY_LESS_EXPENSIVE);
         }
     }
 }
