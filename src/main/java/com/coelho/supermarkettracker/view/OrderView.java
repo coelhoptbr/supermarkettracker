@@ -48,7 +48,6 @@ public class OrderView  extends VerticalLayout implements HasDynamicTitle {
     private GridCrud<Order> orderCrudGrid;
     private Dialog dlgInsertNewOrder;
     private ObjectId idOrderInEditMode;
-    private final CurrencyEnum currency = CurrencyEnum.BRL;
 
     private final OrderService ordService;
 
@@ -150,7 +149,7 @@ public class OrderView  extends VerticalLayout implements HasDynamicTitle {
 
     private Div getCurrencySuffixDiv() {
         Div euroSuffix = new Div();
-        euroSuffix.setText(currency.getSymbol());
+        euroSuffix.setText(ordService.getCurrency().getSymbol());
         return euroSuffix;
     }
 
@@ -258,7 +257,7 @@ public class OrderView  extends VerticalLayout implements HasDynamicTitle {
         if (order != null) {
             lblMoreExpensive.setText("More expensive was in " + order.getShop().getName()
                     + " on " + order.getDate().toString() + " at a cost of "
-                    + currency.getSymbol() + " "  + order.getPrice().toString());
+                    + ordService.getCurrency().getSymbol() + " "  + order.getPrice().toString());
         } else {
             lblMoreExpensive.setText(Const.MSG_NO_HISTORY_MORE_EXPENSIVE);
         }
@@ -270,7 +269,7 @@ public class OrderView  extends VerticalLayout implements HasDynamicTitle {
         if (order != null) {
             lblLessExpensive.setText("Less expensive was in " + order.getShop().getName()
                     + " on " + order.getDate().toString() + " at a cost of "
-                    + currency.getSymbol() + " " + order.getPrice().toString());
+                    + ordService.getCurrency().getSymbol() + " " + order.getPrice().toString());
         } else {
             lblLessExpensive.setText(Const.MSG_NO_HISTORY_LESS_EXPENSIVE);
         }
