@@ -1,12 +1,6 @@
 package com.coelho.supermarkettracker.view;
 
-import com.coelho.supermarkettracker.domain.Const;
-import com.coelho.supermarkettracker.domain.MinMaxEnum;
-import com.coelho.supermarkettracker.domain.Order;
-import com.coelho.supermarkettracker.domain.PagesEnum;
-import com.coelho.supermarkettracker.domain.Product;
-import com.coelho.supermarkettracker.domain.Shop;
-import com.coelho.supermarkettracker.domain.UserInfo;
+import com.coelho.supermarkettracker.domain.*;
 import com.coelho.supermarkettracker.service.OrderService;
 import com.coelho.supermarkettracker.service.ProductService;
 import com.coelho.supermarkettracker.service.ShopService;
@@ -138,7 +132,7 @@ public class OrderView  extends VerticalLayout {
 
     private Div getEuroSuffixDiv() {
         Div euroSuffix = new Div();
-        euroSuffix.setText("€");
+        euroSuffix.setText(CurrencyEnum.BRL.getSymbol());
         return euroSuffix;
     }
 
