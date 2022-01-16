@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Document(collection="aleuserinfo")
+@Document(collection = "#{T(com.coelho.supermarkettracker.config.CustomMongoCollection).getCollectionNameWithPrefix('userinfo')}")
 public class UserInfo {
 
     @NotNull
