@@ -12,6 +12,8 @@ public class AvgReportDTO {
 
     private Double averagePrice;
 
+    private Long numberOrders;
+
     public Product getProduct() {
         return product;
     }
@@ -44,11 +46,20 @@ public class AvgReportDTO {
         this.averagePrice = averagePrice;
     }
 
+    public Long getNumberOrders() {
+        return numberOrders;
+    }
+
+    public void setNumberOrders(Long numberOrders) {
+        this.numberOrders = numberOrders;
+    }
+
     @Override
     public String toString() {
         String result = this.getProduct().getName() + ";"
                 + this.getHighestPrice() + ";"
-                + this.getLowestPrice();
+                + this.getLowestPrice() + ";"
+                + this.getNumberOrders();
         return result;
     }
 
