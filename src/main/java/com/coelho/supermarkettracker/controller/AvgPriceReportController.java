@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.coelho.supermarkettracker.domain.Const.LINEBREAK;
@@ -30,8 +32,9 @@ public class AvgPriceReportController {
 
     @RequestMapping(path = "/download", method = RequestMethod.GET)
     public ResponseEntity<Resource> download() throws IOException {
+        String filename = "report-" + getFormattedDate(new Date(), "yyyy-mm-dd-hhmmss") + ".csv";
         List<String> result = new ArrayList<>();
-        result.add("Product name; Highest price; Lowest price".concat(LINEBREAK));
+        result.add("Product name; Highest price; Lowest price; Number of orders".concat(LINEBREAK));
 
         service.getReport().stream().forEach(prodLoop -> {
             result.add(prodLoop.toString().concat(LINEBREAK));
@@ -45,7 +48,7 @@ public class AvgPriceReportController {
         ByteArrayResource bais = new ByteArrayResource (bOutStr.toByteArray());
 
         HttpHeaders header = new HttpHeaders();
-        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=report.txt");
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
         header.add("Cache-Control", "no-cache, no-store, must-revalidate");
         header.add("Pragma", "no-cache");
         header.add("Expires", "0");
@@ -57,4 +60,8 @@ public class AvgPriceReportController {
                 .body(bais);
     }
 
+    private String getFormattedDate(Date date, String format) {
+        DateFormat dateFormat = new SimpleDateFormat(format);
+        return dateFormat.format(date);
+    }
 }

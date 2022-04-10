@@ -132,12 +132,12 @@ public class OrderView  extends VerticalLayout implements HasDynamicTitle {
     private GridCrud<Order> getOrderGrid(OrderService service) {
         orderCrudGrid = new GridCrud<Order>(Order.class, ordService);
 
-        orderCrudGrid.getGrid().setColumns("date", "userInfo.fullName", "shop.name", "product.name", "price", "isOffer");
+        orderCrudGrid.getGrid().setColumns("date", "userInfo.fullName", "shop.name", "product.name", "price");//, "isOffer");
 
         orderCrudGrid.getGrid().getColumnByKey("userInfo.fullName").setHeader("User");
         orderCrudGrid.getGrid().getColumnByKey("shop.name").setHeader("Shop");
         orderCrudGrid.getGrid().getColumnByKey("product.name").setHeader("Product");
-        orderCrudGrid.getGrid().getColumnByKey("isOffer").setHeader("On sale");
+        //orderCrudGrid.getGrid().getColumnByKey("isOffer").setHeader("On sale");
 
         orderCrudGrid.getGrid().setColumnReorderingAllowed(true);
         orderCrudGrid.getGrid().setVerticalScrollingEnabled(true);
@@ -277,6 +277,6 @@ public class OrderView  extends VerticalLayout implements HasDynamicTitle {
     }
 
     private void downloadReport() {
-        getUI().get().getPage().open("/avgpricereport/download", "_self");
+        getUI().get().getPage().open("/avgpricereport/download", "_new");
     }
 }
