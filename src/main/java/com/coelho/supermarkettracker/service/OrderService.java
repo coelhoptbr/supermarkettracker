@@ -104,4 +104,8 @@ public class OrderService implements CrudListener<Order> {
         return null;
 
     }
+
+    public Long getNumberOfOrders(Product product) {
+        return repo.countByProduct(product);
+    }
 }

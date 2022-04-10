@@ -3,9 +3,6 @@ package com.coelho.supermarkettracker.service;
 import com.coelho.supermarkettracker.domain.AvgReportDTO;
 import com.coelho.supermarkettracker.domain.MinMaxEnum;
 import com.coelho.supermarkettracker.domain.Order;
-import com.coelho.supermarkettracker.domain.Product;
-import com.coelho.supermarkettracker.repo.OrderRepository;
-import com.coelho.supermarkettracker.repo.ProductRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -36,6 +33,7 @@ public class AvgPriceReportService {
             Order orderMinPrice = orderService.getHighestLowestPrice(prodLoop, null, MinMaxEnum.MIN);
             if (orderMinPrice != null) reportLine.setLowestPrice(orderMinPrice.getPrice());
 
+            reportLine.setNumberOrders(orderService.getNumberOfOrders(prodLoop));
             result.add(reportLine);
 
         });
