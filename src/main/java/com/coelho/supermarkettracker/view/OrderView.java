@@ -68,6 +68,9 @@ public class OrderView  extends VerticalLayout implements HasDynamicTitle {
         HorizontalLayout hrzLayoutToolbar = new HorizontalLayout();
         add(hrzLayoutToolbar);
 
+        HorizontalLayout hrzLayoutToolbar2 = new HorizontalLayout();
+        add(hrzLayoutToolbar2);
+
         // creating a vertical layout inside the dialog popup for the data fields
         VerticalLayout vrtLayoutDlgNewOrder = new VerticalLayout();
         dlgInsertNewOrder.add(vrtLayoutDlgNewOrder);
@@ -105,11 +108,12 @@ public class OrderView  extends VerticalLayout implements HasDynamicTitle {
         // creating the button update order
         Button btnUpdateOrder = new Button(Const.ORDER_UPDATE, e -> updateOrder());
         // creating the button Download report
-        Button btnDownloadReport = new Button(Const.DOWNLOAD_REPORT, e -> downloadReport());
+        Button btnDownloadReport = new Button(Const.REPORT, e -> downloadReport());
 
-        hrzLayoutToolbar.add(btnNewOrder, btnUpdateOrder, btnDownloadReport);
+        hrzLayoutToolbar.add(btnNewOrder, btnUpdateOrder);
+        hrzLayoutToolbar2.add(btnDownloadReport);
 
-        ViewUtils.addButtonsMenu(hrzLayoutToolbar, PagesEnum.ORDER);
+        ViewUtils.addButtonsMenu(hrzLayoutToolbar2, PagesEnum.ORDER);
 
         // grid
         add(new Label("List of " + Const.ORDERS));
@@ -132,12 +136,10 @@ public class OrderView  extends VerticalLayout implements HasDynamicTitle {
     private GridCrud<Order> getOrderGrid(OrderService service) {
         orderCrudGrid = new GridCrud<Order>(Order.class, ordService);
 
-        orderCrudGrid.getGrid().setColumns("date", "userInfo.fullName", "shop.name", "product.name", "price");//, "isOffer");
+        orderCrudGrid.getGrid().setColumns("date", "shop.name", "product.name", "price");
 
-        orderCrudGrid.getGrid().getColumnByKey("userInfo.fullName").setHeader("User");
         orderCrudGrid.getGrid().getColumnByKey("shop.name").setHeader("Shop");
         orderCrudGrid.getGrid().getColumnByKey("product.name").setHeader("Product");
-        //orderCrudGrid.getGrid().getColumnByKey("isOffer").setHeader("On sale");
 
         orderCrudGrid.getGrid().setColumnReorderingAllowed(true);
         orderCrudGrid.getGrid().setVerticalScrollingEnabled(true);
